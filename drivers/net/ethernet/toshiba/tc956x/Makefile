@@ -81,8 +81,15 @@ endif
 endif
 ccflags-y := -Wmissing-prototypes
 
-all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+# Allow KERNEL_SRC to be set externally (e.g. by Yocto/OE); fall back to
+# the running kernel's build tree for native development builds.
+KERNEL_SRC ?= /lib/modules/$(shell uname -r)/build
+
+modules:
+	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) modules
+
+modules_install:
+	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) modules_install
 
 clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) clean
