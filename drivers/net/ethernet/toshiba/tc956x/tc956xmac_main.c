@@ -3921,12 +3921,6 @@ static void tc956xmac_mac_link_down(struct phylink_config *config,
 }
 
 #ifdef TC956X_5_G_2_5_G_EEE_SUPPORT
-static inline bool tc956x_phy_check_valid(int speed, int duplex,
-				   unsigned long *features)
-{
-	return !!phy_lookup_setting(speed, duplex, features, true);
-}
-
 static void tc956x_mmd_eee_adv_to_linkmode_5G_2_5G(unsigned long *advertising, u16 eee_adv)
 {
 	linkmode_zero(advertising);
@@ -3995,7 +3989,7 @@ static int tc956x_phy_init_eee(struct phy_device *phydev, bool clk_stop_enable)
 		tc956x_mmd_eee_adv_to_linkmode_5G_2_5G(lp, eee_lp);
 		linkmode_and(common, adv, lp);
 
-		if (!tc956x_phy_check_valid(phydev->speed, phydev->duplex, common)) {
+		if (!phy_check_valid(phydev->speed, phydev->duplex, common)) {
 			KPRINT_ERR("Error 6\n");
 			goto eee_exit_err;
 		}
@@ -4103,7 +4097,7 @@ int phy_init_eee_local(struct phy_device *phydev, bool clk_stop_enable)
 
 		KPRINT_INFO("%s common: 0x%x\n", __func__, common);
 
-		if (!tc956x_phy_check_valid(phydev->speed, phydev->duplex, common)) {
+		if (!phy_check_valid(phydev->speed, phydev->duplex, common)) {
 			KPRINT_ERR("Error 5\n");
 			goto eee_exit_err;
 		}
