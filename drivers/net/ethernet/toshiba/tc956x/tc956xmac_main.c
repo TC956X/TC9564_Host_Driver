@@ -15336,7 +15336,7 @@ static void parse_config_file(uint8_t port_id, uint8_t dev_id)
 		}
 	}
 
-	vfree(data);
+	kvfree(data);
 	KPRINT_INFO("<--%s", __func__);
 }
 #endif
