@@ -11159,9 +11159,9 @@ static int tc956xmac_ioctl_set_phy_loopback(struct tc956xmac_priv *priv, void __
 
 #ifdef TC956X
 	if (priv->phy_loopback_mode)
-		ret = phy_loopback(priv->dev->phydev, true);
+		ret = phy_loopback(priv->dev->phydev, true, 0);
 	else
-		ret = phy_loopback(priv->dev->phydev, false);
+		ret = phy_loopback(priv->dev->phydev, false, 0);
 
 	if (ret)
 		return ret;
