@@ -351,7 +351,7 @@ static void tc956xmac_exit_fs(struct net_device *dev);
 #endif
 #endif /* TC956X_SRIOV_PF */
 #ifdef TC956X_5_G_2_5_G_EEE_SUPPORT
-extern int phy_ethtool_set_eee_2p5(struct phy_device *phydev, struct ethtool_eee *data);
+extern int phy_ethtool_set_eee_2p5(struct phy_device *phydev, struct ethtool_keee *data);
 #endif
 #ifdef TC956X_SRIOV_PF
 extern struct tx956x_shrd_mem tx956x_pci_shrd_mem[TC956X_TOT_CASCADE_DEV];
@@ -4613,7 +4613,7 @@ static int tc956xmac_init_phy(struct net_device *dev)
 	int ret;
 	struct phy_device *phydev = NULL;
 	int addr = priv->plat->phy_addr;
-	struct ethtool_eee edata;
+	struct ethtool_keee edata;
 
 	node = priv->plat->phylink_node;
 
@@ -4690,7 +4690,7 @@ static int tc956xmac_init_phy(struct net_device *dev)
 	}
 	/* Enable or disable EEE Advertisement based on eee_enabled settings which might be set using module param */
 	edata.eee_enabled = priv->eee_enabled;
-	edata.advertised = 0;
+	bitmap_zero(edata.advertised, __ETHTOOL_LINK_MODE_MASK_NBITS);
 
 	if (priv->phylink) {
 		if ((priv->plat->interface != PHY_INTERFACE_MODE_RGMII) &&
@@ -10276,7 +10276,7 @@ static void tc956xmac_poll_controller(struct net_device *dev)
 int tc956xmac_rx_parser_configuration(struct tc956xmac_priv *priv)
 {
 	int ret = -EINVAL, re_init_eee = 0, dly_cnt = 0, ret_val;
-	struct ethtool_eee edata;
+	struct ethtool_keee edata;
 
 #ifndef TC956X_SRIOV_VF
 	/* Disable EEE before configuring FRP */
