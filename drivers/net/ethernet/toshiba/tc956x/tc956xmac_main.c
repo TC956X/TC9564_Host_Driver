@@ -6644,8 +6644,7 @@ static void tc956xmac_init_coalesce(struct tc956xmac_priv *priv)
 			continue;
 #endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
-		hrtimer_init(&tx_q->txtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-		tx_q->txtimer.function = tc956xmac_tx_timer;
+		hrtimer_setup(&tx_q->txtimer, tc956xmac_tx_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 #else
 		timer_setup(&tx_q->txtimer, tc956xmac_tx_timer, 0);
 #endif
