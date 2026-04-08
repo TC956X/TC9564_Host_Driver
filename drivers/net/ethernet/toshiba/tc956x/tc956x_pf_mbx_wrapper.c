@@ -45,7 +45,7 @@ extern int tc956xmac_ioctl_get_est(struct tc956xmac_priv *priv, void *data);
 extern int tc956xmac_ioctl_set_fpe(struct tc956xmac_priv *priv, void *data);
 extern int tc956xmac_ioctl_get_fpe(struct tc956xmac_priv *priv, void *data);
 extern int tc956xmac_ethtool_op_get_eee(struct net_device *dev,
-										struct ethtool_eee *edata);
+										struct ethtool_keee *edata);
 
 
 extern int tc956x_pf_set_mac_filter(struct net_device *dev, int vf,
@@ -996,7 +996,7 @@ static int tc956xmac_pf_ioctl_interface(struct tc956xmac_priv *priv,
 static int tc956xmac_pf_ethtool_interface(struct tc956xmac_priv *priv, struct net_device *netdev,
 								u8 *mbx, u8 *ack_buff)
 {
-	struct ethtool_eee edata;
+	struct ethtool_keee edata;
 	unsigned long flags;
 
 	if (priv == NULL || mbx == NULL || netdev == NULL || ack_buff == NULL) {
@@ -1023,9 +1023,9 @@ static int tc956xmac_pf_ethtool_interface(struct tc956xmac_priv *priv, struct ne
 	case TC956XMAC_GET_EEE:
 		tc956xmac_ethtool_op_get_eee(netdev, &edata);
 		ack_buff[0] = OPCODE_MBX_ACK_MSG; /* set ACK opcode */
-		ack_buff[1] = sizeof(struct ethtool_eee); /* set size */
+		ack_buff[1] = sizeof(struct ethtool_keee); /* set size */
 		memcpy(&ack_buff[2], (u8 *)&edata,
-			sizeof(struct ethtool_eee));
+			sizeof(struct ethtool_keee));
 		break;
 
 	default:
