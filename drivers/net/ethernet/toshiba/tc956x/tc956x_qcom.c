@@ -7,6 +7,7 @@
 #include <linux/gpio/consumer.h>
 #include <linux/kernel.h>
 #include <linux/of_irq.h>
+#include <linux/of_net.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/regulator/consumer.h>
 
@@ -84,11 +85,36 @@ static int tc956x_phy_power_off(struct tc956xmac_priv *priv)
 	return ret;
 }
 
+/* tc956xmac_pci_probe calls this function and expects a
+ * non-zero return value if an overlay is present.
+ */
 int tc956x_platform_port_interface_overlay(struct device *dev,
 					   struct tc956xmac_resources *res)
 {
-	/* Currently unused */
-	return 0;
+	phy_interface_t phy_iface;
+	int ret;
+
+	if (!dev->of_node)
+		return 0;
+
+	ret = of_get_phy_mode(dev->of_node, &phy_iface);
+	if (ret) {
+		if (ret != -ENODEV)
+			dev_warn(dev, "Failed to read phy-mode: %d\n", ret);
+		return 0;
+	}
+
+	switch (phy_iface) {
+	case PHY_INTERFACE_MODE_SGMII:
+		res->port_interface = ENABLE_SGMII_INTERFACE;
+		res->c45_state = false;
+		res->mdc_clk = TC956XMAC_XGMAC_MDC_CSR_62;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return 1;
 }
 
 static int tc956x_platform_of_parse(struct device *dev,
