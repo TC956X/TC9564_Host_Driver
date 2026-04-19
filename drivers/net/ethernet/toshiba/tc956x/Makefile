@@ -78,6 +78,9 @@ ifeq ($(TC956XMAC_SELFTESTS), 1)
 	tc956x_pcie_eth-y += tc956xmac_selftests.o
 endif
 
+# Qualcomm platform support
+tc956x_pcie_eth-y += tc956x_qcom.o tc956x_gpio.o
+
 endif
 ccflags-y := -Wmissing-prototypes
 
